@@ -31,7 +31,7 @@ PROJECT_NAME        = "EaselJS"
 PROJECT_URL         = "http://easeljs.com/"
 DOCS_DIR_NAME       = PROJECT_NAME + "_docs"
 DOCS_FILE_NAME      = DOCS_DIR_NAME + ".zip"
-OUTPUT_DIR_NAME     = "output"
+OUTPUT_DIR_NAME     = "./output"
 TEMPLATE_DIR_PATH   = "template"
 TMP_DIR_NAME        = "tmp"
 
@@ -59,6 +59,7 @@ version          = undefined
 verbose          = undefined
 extraSourceFiles = undefined
 
+OUTPUT_DIR_NAME = path.resolve OUTPUT_DIR_NAME
 
 optimist.describe("v", "Enable verbose output")
   .alias("v", "verbose")
