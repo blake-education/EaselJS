@@ -198,7 +198,7 @@ var p = Stage.prototype = new Container();
 	 **/
 	p.initialize = function(canvas) {
 		this.Container_initialize();
-		this.canvas = (canvas instanceof HTMLCanvasElement) ? canvas : document.getElementById(canvas);
+		this.canvas = EaselJS.getCanvas(canvas)
 		this._enableMouseEvents(true);
 	}
 

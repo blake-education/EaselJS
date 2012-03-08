@@ -64,8 +64,8 @@ var p = DisplayObject.prototype;
 	 * @static
 	 * @protected
 	 **/
-	DisplayObject._hitTestCanvas = document.createElement("canvas");
-	DisplayObject._hitTestCanvas.width = DisplayObject._hitTestCanvas.height = 1;
+	DisplayObject._hitTestCanvas = EaselJS.createCanvas();
+  EaselJS.resizeCanvas(DisplayObject._hitTestCanvas, 1, 1);
 
 	/**
 	 * @property _hitTestContext
@@ -420,10 +420,9 @@ var p = DisplayObject.prototype;
 	 **/
 	p.cache = function(x, y, width, height) {
 		// draw to canvas.
-		if (this.cacheCanvas == null) { this.cacheCanvas = document.createElement("canvas"); }
+		if (this.cacheCanvas == null) { this.cacheCanvas = EaselJS.createCanvas(); }
 		var ctx = this.cacheCanvas.getContext("2d");
-		this.cacheCanvas.width = width;
-		this.cacheCanvas.height = height;
+    EaselJS.resizeCanvas(this.cacheCanvas, width, height);
 		ctx.clearRect(0, 0, width+1, height+1); // because some browsers don't properly clear if the width/height remain the same.
 		ctx.setTransform(1, 0, 0, 1, -x, -y);
 		this.draw(ctx, true, this._matrix.reinitialize(1,0,0,1,-x,-y)); // containers require the matrix to work from
@@ -612,8 +611,8 @@ var p = DisplayObject.prototype;
 
 		var hit = this._testHit(ctx);
 
-		canvas.width = 0;
-		canvas.width = 1;
+    EaselJS.resizeCanvas(canvas, 0, null);
+    EaselJS.resizeCanvas(canvas, 1, null);
 		return hit;
 	}
 

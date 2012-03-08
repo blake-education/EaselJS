@@ -461,8 +461,8 @@ var p = Container.prototype = new DisplayObject();
 			ctx.globalAlpha = mtx.alpha;
 			this.draw(ctx);
 			if (this._testHit(ctx)) {
-				canvas.width = 0;
-				canvas.width = 1;
+        EaselJS.resizeCanvas(canvas, 0, null);
+        EaselJS.resizeCanvas(canvas, 1, null);
 				if (hasHandler) { return this; }
 			} else {
 				return null;
@@ -492,8 +492,8 @@ var p = Container.prototype = new DisplayObject();
 				ctx.globalAlpha = mtx.alpha;
 				child.draw(ctx);
 				if (!this._testHit(ctx)) { continue; }
-				canvas.width = 0;
-				canvas.width = 1;
+        EaselJS.resizeCanvas(canvas, 0, null);
+        EaselJS.resizeCanvas(canvas, 1, null);
 				if (hasHandler) { return this; }
 				else if (arr) { arr.push(child); }
 				else { return child; }
