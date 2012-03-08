@@ -1,4 +1,5 @@
 SOURCE_FILES = """
+  EaselJS.js
   utils/UID.js
   utils/Ticker.js
   events/MouseEvent.js
