@@ -164,35 +164,11 @@ var p = Graphics.prototype;
 	
 	/**
 	 * @property _ctx
-	 * @static
 	 * @protected
 	 * @type CanvasRenderingContext2D
 	 **/
-	Graphics._ctx = EaselJS.createCanvas().getContext("2d");
+	p._ctx = null;
 	
-	/**
-	 * @property beginCmd
-	 * @static
-	 * @protected
-	 * @type Command
-	 **/
-	Graphics.beginCmd = new Command(Graphics._ctx.beginPath, []);
-	
-	/**
-	 * @property fillCmd
-	 * @static
-	 * @protected
-	 * @type Command
-	 **/
-	Graphics.fillCmd = new Command(Graphics._ctx.fill, []);
-	
-	/**
-	 * @property strokeCmd
-	 * @static
-	 * @protected
-	 * @type Command
-	 **/
-	Graphics.strokeCmd = new Command(Graphics._ctx.stroke, []);
 
 	/**
 	 * @property _strokeInstructions
@@ -260,7 +236,7 @@ var p = Graphics.prototype;
 	 **/
 	p.initialize = function() {
 		this.clear();
-		this._ctx = Graphics._ctx;
+		this._ctx = EaselJS.createCanvas('Graphics').getContext("2d");
 	}
 	
 	/**
@@ -1004,12 +980,44 @@ var p = Graphics.prototype;
 	
 // private methods:
 	/**
+	 * @method beginCmd
+	 * @protected
+	 * @return Command
+	 **/
+  p.beginCmd = function() {
+    return this._beginCmd = (this._beginCmd || new Command(this._ctx.beginPath, []));
+  }
+
+
+	/**
+	 * @method fillCmd
+	 * @protected
+	 * @return Command
+	 **/
+  p.fillCmd = function() {
+    return this._fillCmd = (this._fillCmd || new Command(this._ctx.fill, []));
+  }
+
+
+	
+	/**
+	 * @method strokeCmd
+	 * @protected
+	 * @return Command
+	 **/
+  p.strokeCmd = function() {
+    return this._strokeCmd = (this._strokeCmd || new Command(this._ctx.stroke, []));
+  }
+
+
+
+	/**
 	 * @method _updateInstructions
 	 * @protected
 	 **/
 	p._updateInstructions = function() {
 		this._instructions = this._oldInstructions.slice()
-		this._instructions.push(Graphics.beginCmd);
+		this._instructions.push(this.beginCmd());
 		 
 		if (this._fillInstructions) { this._instructions.push.apply(this._instructions, this._fillInstructions); }
 		if (this._strokeInstructions) {
@@ -1021,8 +1029,8 @@ var p = Graphics.prototype;
 		
 		this._instructions.push.apply(this._instructions, this._activeInstructions);
 		
-		if (this._fillInstructions) { this._instructions.push(Graphics.fillCmd); }
-		if (this._strokeInstructions) { this._instructions.push(Graphics.strokeCmd); }
+		if (this._fillInstructions) { this._instructions.push(this.fillCmd()); }
+		if (this._strokeInstructions) { this._instructions.push(this.strokeCmd()); }
 	}
 	
 	/**

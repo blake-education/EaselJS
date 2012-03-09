@@ -61,7 +61,7 @@ var p = Text.prototype = new DisplayObject();
 	 * @type CanvasRenderingContext2D
 	 * @private
 	 **/
-	Text._workingContext = EaselJS.createCanvas().getContext("2d");
+	p._workingContext = null;
 
 // public properties:
 	/**
@@ -152,6 +152,7 @@ var p = Text.prototype = new DisplayObject();
 		this.text = text;
 		this.font = font;
 		this.color = color ? color : "#000";
+    this._workingContext = EaselJS.createCanvas('Text-working').getContext("2d");
 	}
 	
 	/**
@@ -291,7 +292,7 @@ var p = Text.prototype = new DisplayObject();
 	 * @protected 
 	 **/
 	p._getWorkingContext = function() {
-		var ctx = Text._workingContext;
+		var ctx = this._workingContext;
 		ctx.font = this.font;
 		ctx.textAlign = this.textAlign ? this.textAlign : "start";
 		ctx.textBaseline = this.textBaseline ? this.textBaseline : "alphabetic";

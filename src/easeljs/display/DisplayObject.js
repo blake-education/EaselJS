@@ -59,29 +59,29 @@ var p = DisplayObject.prototype;
 	DisplayObject.suppressCrossDomainErrors = false;
 
 	/**
-	 * @property _hitTestCanvas
-	 * @type HTMLCanvasElement
-	 * @static
-	 * @protected
-	 **/
-	DisplayObject._hitTestCanvas = EaselJS.createCanvas();
-  EaselJS.resizeCanvas(DisplayObject._hitTestCanvas, 1, 1);
-
-	/**
-	 * @property _hitTestContext
-	 * @type CanvasRenderingContext2D
-	 * @static
-	 * @protected
-	 **/
-	DisplayObject._hitTestContext = DisplayObject._hitTestCanvas.getContext("2d");
-
-	/**
 	 * @property _nextCacheID
 	 * @type Number
 	 * @static
 	 * @protected
 	 **/
 	DisplayObject._nextCacheID = 1;
+
+
+	/**
+	 * @property _hitTestCanvas
+	 * @type HTMLCanvasElement
+	 * @protected
+	 **/
+	p._hitTestCanvas = null;
+
+
+	/**
+	 * @property _hitTestContext
+	 * @type CanvasRenderingContext2D
+	 * @protected
+	 **/
+	p._hitTestContext = null;
+
 
 	/**
 	 * The alpha (transparency) for this display object. 0 is fully transparent, 1 is fully opaque.
@@ -373,6 +373,12 @@ var p = DisplayObject.prototype;
 	p.initialize = function() {
 		this.id = UID.get();
 		this._matrix = new Matrix2D();
+
+    // XXX make these lazy?
+    // XXX make these shared-per-swf
+    this._hitTestCanvas = EaselJS.createCanvas('DisplayObject-hit');
+    EaselJS.resizeCanvas(this._hitTestCanvas, 1, 1);
+    this._hitTestContext = this._hitTestCanvas.getContext("2d");
 	}
 
 // public methods:
@@ -603,8 +609,8 @@ var p = DisplayObject.prototype;
 	 * local Point.
 	*/
 	p.hitTest = function(x, y) {
-		var ctx = DisplayObject._hitTestContext;
-		var canvas = DisplayObject._hitTestCanvas;
+		var ctx = this._hitTestContext;
+		var canvas = this._hitTestCanvas;
 
 		ctx.setTransform(1,  0, 0, 1, -x, -y);
 		this.draw(ctx);
@@ -705,8 +711,9 @@ var p = DisplayObject.prototype;
 			var hit = ctx.getImageData(0, 0, 1, 1).data[3] > 1;
 		} catch (e) {
 			if (!DisplayObject.suppressCrossDomainErrors) {
+        console.error("_testHit error", e);
 				throw "An error has occured. This is most likely due to security restrictions on reading canvas pixel " +
-				"data with local or cross-domain images.";
+				"data with local or cross-domain images. ";
 			}
 		}
 		return hit;

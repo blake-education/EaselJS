@@ -50,9 +50,9 @@ var SpriteSheetUtils = function() {
 	throw "SpriteSheetUtils cannot be instantiated";
 }
 
+  // XXX HMMMM
 	/**
 	 * @property _workingCanvas
-	 * @static
 	 * @type HTMLCanvasElement
 	 * @protected
 	*/
@@ -60,7 +60,6 @@ var SpriteSheetUtils = function() {
 
 	/**
 	 * @property _workingContext
-	 * @static
 	 * @type CanvasRenderingContext2D
 	 * @protected
 	*/

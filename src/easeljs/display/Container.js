@@ -448,8 +448,8 @@ var p = Container.prototype = new DisplayObject();
 	 * @protected
 	 **/
 	p._getObjectsUnderPoint = function(x, y, arr, mouseEvents) {
-		var ctx = DisplayObject._hitTestContext;
-		var canvas = DisplayObject._hitTestCanvas;
+		var ctx = this._hitTestContext;
+		var canvas = this._hitTestCanvas;
 		var mtx = this._matrix;
 		var hasHandler = (mouseEvents&1 && (this.onPress || this.onClick || this.onDoubleClick)) || (mouseEvents&2 &&
 																(this.onMouseOver || this.onMouseOut));
