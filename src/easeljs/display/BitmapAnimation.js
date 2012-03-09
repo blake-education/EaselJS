@@ -288,7 +288,7 @@ var p = BitmapAnimation.prototype = new DisplayObject();
 		if (advance && !this.paused && ((++this._advanceCount)+this.offset)%f == 0) {
 			this.advance(elapsedTime);
 		}
-		if (this.tick) { this.tick(elapsedTime, paused); }
+		if (this.tick) { this.tick(elapsedTime, globalPaused); }
 	}
 	
 	
