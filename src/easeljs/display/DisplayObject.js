@@ -241,14 +241,14 @@ var p = DisplayObject.prototype;
 	p.compositeOperation = null;
 
 	/**
-	 * Indicates whether the display object should have it's x & y position rounded prior to drawing it to stage.
-	 * This only applies if the enclosing stage has snapPixelsEnabled set to true, and the display object's composite
-	 * transform does not include any scaling, rotation, or skewing. The snapToPixel property is true by default for
+	* Indicates whether the display object should have it's x & y position rounded prior to drawing it to stage.
+	* This only applies if the enclosing stage has snapPixelsEnabled set to true, and the display object's composite
+	* transform does not include any scaling, rotation, or skewing. The snapToPixel property is true by default for
 	 * Bitmap and BitmapAnimation instances, and false for all other display objects.
-	 * @property snapToPixel
-	 * @type Boolean
-	 * @default false
-	 **/
+	* @property snapToPixel
+	* @type Boolean
+	* @default false
+	**/
 	p.snapToPixel = false;
 
 	/**
@@ -319,6 +319,15 @@ var p = DisplayObject.prototype;
 	* @default 0
 	*/
 	p.cacheID = 0;
+
+	/**
+	 * An instance of Graphics acting as a clipping path for this DisplayObject. The clipping path is applied
+	 * as the DisplayObject is drawn to the stage.
+	 * @property clip
+	 * @type Graphic
+	 * @default null
+	 */
+	p.clip = null;
 
 // private properties:
 
@@ -394,36 +403,66 @@ var p = DisplayObject.prototype;
 	}
 
 	/**
-	 * Draws the display object into the specified context ignoring it's visible, alpha, shadow, and transform.
-	 * Returns true if the draw was handled (useful for overriding functionality).
-	 * NOTE: This method is mainly for internal use, though it may be useful for advanced uses.
-	 * @method draw
-	 * @param {CanvasRenderingContext2D} ctx The canvas 2D context object to draw into.
-	 * @param {Boolean} ignoreCache Indicates whether the draw operation should ignore any current cache.
-	 * For example, used for drawing the cache (to prevent it from simply drawing an existing cache back
-	 * into itself).
-	 **/
+	* Draws the display object into the specified context ignoring it's visible, alpha, shadow, and transform.
+	* Returns true if the draw was handled (useful for overriding functionality).
+	* NOTE: This method is mainly for internal use, though it may be useful for advanced uses.
+	* @method draw
+	* @param {CanvasRenderingContext2D} ctx The canvas 2D context object to draw into.
+	* @param {Boolean} ignoreCache Indicates whether the draw operation should ignore any current cache.
+	* For example, used for drawing the cache (to prevent it from simply drawing an existing cache back
+	* into itself).
+	**/
 	p.draw = function(ctx, ignoreCache) {
 		if (ignoreCache || !this.cacheCanvas) { return false; }
+		this.beginClip(ctx);
 		ctx.drawImage(this.cacheCanvas, this._cacheOffsetX, this._cacheOffsetY);
+		this.endClip(ctx);
 		return true;
 	}
 
 	/**
-	 * Draws the display object into a new canvas, which is then used for subsequent draws. For complex content
-	 * that does not change frequently (ex. a Sprite with many children that do not move, or a complex vector Shape),
-	 * this can provide for much faster rendering because the content does not need to be re-rendered each tick. The
-	 * cached display object can be moved, rotated, faded, etc freely, however if it's content changes, you must manually
-	 * update the cache by calling updateCache() or cache() again. You must specify the cache area via the x, y, w,
-	 * and h parameters. This defines the rectangle that will be rendered and cached using this display object's
-	 * coordinates. For example if you defined a Shape that drew a circle at 0, 0 with a radius of 25, you could call
-	 * myShape.cache(-25, -25, 50, 50) to cache the full shape.
-	 * @method cache
-	 * @param {Number} x The x coordinate origin for the cache region.
-	 * @param {Number} y The y coordinate origin for the cache region.
-	 * @param {Number} width The width of the cache region.
-	 * @param {Number} height The height of the cache region.
-	 **/
+	 * Begins the process of drawing the clipping path to the stage. This method should be called before
+	 * an object is about to be drawn to the stage, immediately followed by endClip
+	 * NOTE: This method is mainly for internal use, though it may be useful for advanced uses.
+	 * @method beginClip
+	 * @param ctx
+	 */
+	p.beginClip = function(ctx) {
+		if (this.clip instanceof Graphics) {
+			ctx.save();//push current state into canvas
+			this.clip.draw(ctx);
+			ctx.clip();
+		}
+	}
+
+	/**
+	 * Ends the process of clipping the current display object after it is drawn. This method should be called after
+	 * an object has been drawn to the stage, provided beginClip was called before.
+	 * NOTE: This method is mainly for internal use, though it may be useful for advanced uses.
+	 * @method endClip
+	 * @param ctx
+	 */
+	p.endClip = function(ctx) {
+		if (this.clip instanceof Graphics) {
+			ctx.restore();
+		}
+	}
+
+	/**
+	* Draws the display object into a new canvas, which is then used for subsequent draws. For complex content
+	* that does not change frequently (ex. a Sprite with many children that do not move, or a complex vector Shape),
+	* this can provide for much faster rendering because the content does not need to be re-rendered each tick. The
+	* cached display object can be moved, rotated, faded, etc freely, however if it's content changes, you must manually
+	* update the cache by calling updateCache() or cache() again. You must specify the cache area via the x, y, w,
+	* and h parameters. This defines the rectangle that will be rendered and cached using this display object's
+	* coordinates. For example if you defined a Shape that drew a circle at 0, 0 with a radius of 25, you could call
+	* myShape.cache(-25, -25, 50, 50) to cache the full shape.
+	* @method cache
+	* @param {Number} x The x coordinate origin for the cache region.
+	* @param {Number} y The y coordinate origin for the cache region.
+	* @param {Number} width The width of the cache region.
+	* @param {Number} height The height of the cache region.
+	**/
 	p.cache = function(x, y, width, height) {
 		// draw to canvas.
 		if (this.cacheCanvas == null) { this.cacheCanvas = EaselJS.createCanvas(); }
@@ -713,7 +752,7 @@ var p = DisplayObject.prototype;
 			if (!DisplayObject.suppressCrossDomainErrors) {
         console.error("_testHit error", e);
 				throw "An error has occured. This is most likely due to security restrictions on reading canvas pixel " +
-				"data with local or cross-domain images. ";
+				"data with local or cross-domain images.";
 			}
 		}
 		return hit;
