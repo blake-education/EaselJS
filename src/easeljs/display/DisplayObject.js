@@ -321,8 +321,8 @@ var p = DisplayObject.prototype;
 	p.cacheID = 0;
 
 	/**
-	 * A graphic from which to generate a clipping path to apply to this display path.  The clipping path is applied
-	 * as the display object is drawn to the stage
+	 * An instance of Graphics acting as a clipping path for this DisplayObject. The clipping path is applied
+	 * as the DisplayObject is drawn to the stage.
 	 * @property clip
 	 * @type Graphic
 	 * @default null
