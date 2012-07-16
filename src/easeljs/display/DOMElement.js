@@ -57,9 +57,9 @@
 * @param {HTMLElement} htmlElement A reference or id for the DOM element to manage.
 **/
 var DOMElement = function(htmlElement) {
-  this.initialize(htmlElement);
+  EaselJS.inheriting && this.initialize(htmlElement);
 }
-var p = DOMElement.prototype = new DisplayObject();
+var p = EaselJS.inherit(DOMElement, DisplayObject);
 
 // public properties:
 	/**

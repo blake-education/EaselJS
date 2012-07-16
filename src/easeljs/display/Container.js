@@ -49,9 +49,9 @@
 * @constructor
 **/
 var Container = function() {
-  this.initialize();
+  EaselJS.initializing && this.initialize();
 }
-var p = Container.prototype = new DisplayObject();
+var p = EaselJS.inherit(Container, DisplayObject);
 
 // public properties:
 	/**

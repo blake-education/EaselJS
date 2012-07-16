@@ -81,7 +81,7 @@ Command.prototype.exec = function(scope) { this.f.apply(scope, this.params); }
 * @for Graphics
 **/
 var Graphics = function() {
-	this.initialize();
+	EaselJS.initializing && this.initialize();
 }
 var p = Graphics.prototype;
 

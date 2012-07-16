@@ -44,9 +44,9 @@
 * @param {Image | HTMLCanvasElement | HTMLVideoElement | String} imageOrUri The source object or URI to an image to display. This can be either an Image, Canvas, or Video object, or a string URI to an image file to load and use. If it is a URI, a new Image object will be constructed and assigned to the .image property.
 **/
 var Bitmap = function(imageOrUri) {
-  this.initialize(imageOrUri);
+  EaselJS.initializing && this.initialize(imageOrUri);
 }
-var p = Bitmap.prototype = new DisplayObject();
+var p = EaselJS.inherit(Bitmap, DisplayObject);
 
 // public properties:
 	/**

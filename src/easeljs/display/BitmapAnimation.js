@@ -49,9 +49,9 @@
 * dimensions, and frame data. See SpriteSheet for more information.
 **/
 var BitmapAnimation = function(spriteSheet) {
-  this.initialize(spriteSheet);
+  EaselJS.initializing && this.initialize(spriteSheet);
 }
-var p = BitmapAnimation.prototype = new DisplayObject();
+var p = EaselJS.inherit(BitmapAnimation, DisplayObject);
 
 // public properties:
 

@@ -44,7 +44,7 @@
 * @constructor
 **/
 var DisplayObject = function() {
-  this.initialize();
+  EaselJS.initializing && this.initialize();
 }
 var p = DisplayObject.prototype;
 

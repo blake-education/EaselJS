@@ -45,9 +45,9 @@
 * @param {Graphics} graphics Optional. The graphics instance to display. If null, a new Graphics instance will be created.
 **/
 var Shape = function(graphics) {
-  this.initialize(graphics);
+  EaselJS.initializing && this.initialize(graphics);
 }
-var p = Shape.prototype = new DisplayObject();
+var p = EaselJS.inherit(Shape, DisplayObject);
 
 // public properties:
 	/**

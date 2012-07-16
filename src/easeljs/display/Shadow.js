@@ -46,7 +46,7 @@
 * @param {Number} blur The size of the blurring effect.
 **/
 var Shadow = function(color, offsetX, offsetY, blur) {
-  this.initialize(color, offsetX, offsetY, blur);
+  EaselJS.initializing && this.initialize(color, offsetX, offsetY, blur);
 }
 var p = Shadow.prototype;
 	
