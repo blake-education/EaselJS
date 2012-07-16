@@ -45,7 +45,7 @@
 * @param {HTMLCanvasElement} canvas The canvas the stage will render to.
 **/
 var Stage = function(canvas) {
-  EaselJS.inheriting && this.initialize(canvas);
+  EaselJS.initializing && this.initialize(canvas);
 }
 var p = EaselJS.inherit(Stage, Container);
 

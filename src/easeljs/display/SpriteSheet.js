@@ -118,7 +118,7 @@
  * @param data
  **/
 var SpriteSheet = function(data) {
-  EaselJS.inheriting && this.initialize(data);
+  EaselJS.initializing && this.initialize(data);
 }
 var p = SpriteSheet.prototype;
 

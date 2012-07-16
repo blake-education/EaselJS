@@ -51,7 +51,7 @@
 * is acceptable (ex. "#F00").
 **/
 var Text = function(text, font, color) {
-  EaselJS.inheriting && this.initialize(text, font, color);
+  EaselJS.initializing && this.initialize(text, font, color);
 }
 var p = EaselJS.inherit(Text, DisplayObject);
 
