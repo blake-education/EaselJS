@@ -112,5 +112,20 @@ var EaselJS = (window.EaselJS || {})
     }
   }
 
+  EaselJS.initializing = true;
+  EaselJS.inheriting = false;
+
+  EaselJS.inherit = function(subClass, superClass) {
+    EaselJS.inheriting = true;
+    EaselJS.initializing = false;
+
+    var prototype = subClass.prototype = new superClass();
+
+    EaselJS.inheriting = false;
+    EaselJS.initializing = true;
+
+    return prototype;
+  }
+
 window.EaselJS = EaselJS;
 }(window));
