@@ -108,11 +108,11 @@ var SpriteSheetUtils = function() {
 	
 // private static methods:
   SpriteSheetUtils._getWorkingCanvas = function() {
-    EaselJS.createCanvas('SpriteSheetUtils-working');
+    return EaselJS.createCanvas('SpriteSheetUtils-working');
   }
 
   SpriteSheetUtils._getWorkingContext = function() {
-    SpriteSheetUtils.getWorkingCanvas().getContext("2d");
+    return SpriteSheetUtils._getWorkingCanvas().getContext("2d");
   }
 
 	SpriteSheetUtils._flip = function(spriteSheet, count, h, v) {
