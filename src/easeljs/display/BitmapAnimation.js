@@ -360,37 +360,31 @@ var p = BitmapAnimation.prototype = new createjs.DisplayObject();
 	}
 	
 	
-	/**
+  /**
+   Matt - reverted this method back to https://github.com/CreateJS/EaselJS/blob/39ef4b11f4c7282fce3567b3555871aebb2e81c0/src/easeljs/display/BitmapAnimation.js
 	 * Normalizes the current frame, advancing animations and dispatching callbacks as appropriate.
 	 * @protected
 	 * @method _normalizeCurrentFrame
 	 **/
 	p._normalizeFrame = function() { 
-		var animation = this._animation;
-		var frame = this.currentFrame;
-		var paused = this.paused;
-		var l;
-		
-		if (animation) {
-			l = animation.frames.length;
-			if (this.currentAnimationFrame >= l) {
-				var next = animation.next;
-				if (this._dispatchAnimationEnd(animation, frame, paused, next, l-1)) {
-					// do nothing, something changed in the event stack.
-				} else if (next) {
-					this._goto(next);
+		var a = this._animation;
+		if (a) {
+			if (this.currentAnimationFrame >= a.frames.length) {
+				if (a.next) {
+					this._goto(a.next);
 				} else {
 					this.paused = true;
-					this.currentAnimationFrame = animation.frames.length-1;
-					this.currentFrame = animation.frames[this.currentAnimationFrame];
+					this.currentAnimationFrame = a.frames.length-1;
+					this.currentFrame = a.frames[this.currentAnimationFrame];
 				}
+				if (this.onAnimationEnd) { this.onAnimationEnd(this,a.name); }
 			} else {
-				this.currentFrame = animation.frames[this.currentAnimationFrame];
+				this.currentFrame = a.frames[this.currentAnimationFrame];
 			}
 		} else {
-			l = this.spriteSheet.getNumFrames();
-			if (frame >= l) {
-				if (!this._dispatchAnimationEnd(animation, frame, paused, l-1)) { this.currentFrame = 0; }
+			if (this.currentFrame >= this.spriteSheet.getNumFrames()) {
+				this.currentFrame = 0;
+				if (this.onAnimationEnd) { this.onAnimationEnd(this,null); }
 			}
 		}
 	}
