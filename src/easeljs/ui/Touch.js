@@ -56,6 +56,10 @@ this.createjs = this.createjs||{};
  * @class Touch
  * @static
  **/
+ 
+/**
+  * Matt - Bump Touch class to 0.7.1 to fix IE11 bug.
+  **/
 var Touch = function() {
 	throw "Touch cannot be instantiated";
 };
