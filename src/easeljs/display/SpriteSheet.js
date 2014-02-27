@@ -313,7 +313,11 @@ var p = SpriteSheet.prototype;
 					var frames = obj.frames;
 					a = anim.frames = (typeof frames == "number") ? [frames] : frames.slice(0);
 				}
-				anim.next = (a.length < 2 || anim.next == false) ? null : (anim.next == null || anim.next == true) ? name : anim.next;
+				
+				//anim.next = (a.length < 2 || anim.next == false) ? null : (anim.next == null || anim.next == true) ? name : anim.next;        
+        // Revert to pre-0.5.0 behaviour - Matt - change spriteSheet default to no loop
+        anim.next = (a.length < 2 || anim.next == false || anim.next == null) ? null : (anim.next == true) ? name : anim.next;
+				
 				if (!anim.frequency) { anim.frequency = 1; }
 				this._animations.push(name);
 				this._data[name] = anim;
