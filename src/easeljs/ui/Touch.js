@@ -36,8 +36,9 @@ this.createjs = this.createjs||{};
 (function() {
 	"use strict";
 
-// TODO: support for double tap.
-/**
+
+// constructor:
+	/**
  * Global utility for working with multi-touch enabled devices in EaselJS. Currently supports W3C Touch API (iOS and
  * modern Android browser) and the Pointer API (IE), including ms-prefixed events in IE10, and unprefixed in IE11.
  *
@@ -56,15 +57,12 @@ this.createjs = this.createjs||{};
  * @class Touch
  * @static
  **/
- 
-/**
-  * Matt - Bump Touch class to 0.7.1 to fix IE11 bug.
-  **/
-var Touch = function() {
-	throw "Touch cannot be instantiated";
-};
+	function Touch() {
+		throw "Touch cannot be instantiated";
+	}
 
-// Public static methods:
+
+// public static methods:
 	/**
 	 * Returns `true` if touch is supported in the current browser.
 	 * @method isSupported
@@ -72,9 +70,9 @@ var Touch = function() {
 	 * @static
 	 **/
 	Touch.isSupported = function() {
-		return	('ontouchstart' in window) // iOS
+		return	!!(('ontouchstart' in window) // iOS & Android
 			|| (window.navigator['msPointerEnabled'] && window.navigator['msMaxTouchPoints'] > 0) // IE10
-			|| (window.navigator['pointerEnabled'] && window.navigator['maxTouchPoints'] > 0); // IE11+
+			|| (window.navigator['pointerEnabled'] && window.navigator['maxTouchPoints'] > 0)); // IE11+
 	};
 
 	/**
@@ -93,6 +91,7 @@ var Touch = function() {
 	 **/
 	Touch.enable = function(stage, singleTouch, allowDefault) {
 		if (!stage || !stage.canvas || !Touch.isSupported()) { return false; }
+		if (stage.__touch) { return true; }
 
 		// inject required properties on stage:
 		stage.__touch = {pointers:{}, multitouch:!singleTouch, preventDefault:!allowDefault, count:0};
@@ -114,10 +113,12 @@ var Touch = function() {
 		if (!stage) { return; }
 		if ('ontouchstart' in window) { Touch._IOS_disable(stage); }
 		else if (window.navigator['msPointerEnabled'] || window.navigator["pointerEnabled"]) { Touch._IE_disable(stage); }
+		
+		delete stage.__touch;
 	};
 
-// Private static methods:
 
+// Private static methods:
 	/**
 	 * @method _IOS_enable
 	 * @protected
@@ -258,7 +259,6 @@ var Touch = function() {
 		}
 	};
 
-
 	/**
 	 * @method _handleStart
 	 * @param {Stage} stage
@@ -310,5 +310,5 @@ var Touch = function() {
 	};
 
 
-createjs.Touch = Touch;
+	createjs.Touch = Touch;
 }());

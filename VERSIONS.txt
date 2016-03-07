@@ -1,4 +1,245 @@
-Version 0.6.1 [May 10, 2013]
+Version NEXT [Not Released]
+****************************************************************************************************
+
+
+Version 0.8.2 [November 26, 2015]
+****************************************************************************************************
+CRITICAL (may break existing content):
+- MovieClip has been added to the minified EaselJS source. The movieclip minified script has been removed.
+
+*****
+OTHER:
+- fixed compositeOperation value in DisplayProps.setValues (thanks @fumio)
+- documentation updates
+- upgraded tutorials to the latest EaselJS version, including content updates
+- fixed the SpriteSheetBuilder to support both SpriteSheet framerate and speed (instead of frequency)
+- fixed ignoreScale support in Graphic StrokeStyle command
+- bower updates: Removed bower.json from excludes
+- updated ScaleBitmap extra to the new extend/promote approach
+- changed SpriteSheet Array checks from instanceof to Array.isArray()
+- added StrokeDash support to SVGExporter
+- fixed issue with SVGExporter when the first lineTo has a zero-value for x or y
+- added image error handling to SpriteSheet
+- Grunt updates: Added shortcut "next" task
+
+
+Version 0.8.1 [May 21, 2015]
+****************************************************************************************************
+CRITICAL (may break existing content):
+- Graphics.command now returns null after empty fill / stroke calls.
+- dispatchEvent now returns false instead of true to indicate an event had preventDefault called (DOM level 2 compatibility)
+- cursor is now inherited properly (cursors on children override parents)
+
+*****
+OTHER:
+- added Graphics.StrokeDash and Graphics.setStrokeDash()
+- Graphics no longer appends redundant StrokeStyle commands
+- fixed an issue with preventDefault not working with drawstart and tickstart events
+- added bubbles and cancelable params to EventDispatcher.dispatchEvent()
+- reintroduced Sprite.initialize() for now, to support FlashCC spritesheet export
+- fixed an issue with stroke dash not being reset properly on Graphics.clear()
+- bitmap fills no longer throw RTEs when targeting an unloaded image
+- Sprite constructor now accepts 0 as frameOrAnimation param
+- added MouseEvent.relatedTarget
+- improved handling of Bitmap load errors
+- fixed Rectangle.pad
+- fixed issues with buttons playing on reset
+- added totalframes property and getDuration method to MovieClip
+
+
+Version 0.8.0 [December 12, 2014]
+****************************************************************************************************
+CRITICAL (may break existing content):
+- modified behaviour of SpriteSheetBuilder.addFrame setupFunction, setupParams & setupScope params
+- removed the deprecated mousemove & mouseup events on MouseEvent
+- removed Graphics.inject() in favour of Graphics.append()
+- Sprite now properly displays the first frame of animations after calling gotoAndPlay() (thanks MannyC)
+- Moved Ticker into the "createjs" package since it will be included with TweenJS in future releases.
+- re-architected the class and inheritance model
+	- initialize methods removed, use MySuperClass_constructor instead
+	- helper methods: extend & promote (see the "Utility Methods" docs)
+	- property definitions are now instance level, and in the constructor (performance gains)
+	- the .constructor is now set correctly on all classes (thanks kaesve)
+- renamed initialize on geom classes to "setValues()"
+- removed secondary properties (visible, alpha, compositeOperation, shadow) and related functionality from Matrix2D
+	- added DisplayProps to hold these properties + a matrix instance
+- Matrix2D was updated to be internally consistent with regards to matrix orientation
+	- Matrix2D transform methods (ex. translate, rotate) now behave as append instead of prepend operations
+- renamed ColorMatrix.copyMatrix() to .copy() to reflect geom classes
+
+*****
+DEPRECATED (will be removed in a future version):
+- Container.getNumChildren() in favour of Container.numChildren
+- DisplayObject.getStage() in favour of DisplayObject.stage
+- Graphics.getInstructions() in favour of Graphics.instructions
+- MovieClip.getLabels() in favour of MovieClip.labels
+- MovieClip.getCurrentLabel() in favour of MovieClip.currentLabel
+- SpriteSheet.getAnimations() in favour of SpriteSheet.animations
+- Ticker.getInterval() in favour of Ticker.interval
+- Ticker.getFPS() in favour of Ticker.framerate
+- Ticker.getPaused() / setPaused() in favour of Ticker.paused
+
+***********
+PERFORMANCE:
+- added performance tests to extras
+- significant performance improvements:
+	- vector graphics (especially in Graphics instances with large numbers of instructions)
+	- filters (thanks pfirpfel & quasimondo) (~2-4x faster)
+	- overall display list performance (~2x faster)
+	- display object property access (~2x faster)
+	- tick event propagation (~3x faster)
+
+*****
+OTHER:
+- replaced a number of get/set methods with getter / setters. See the DEPRECATED section above for a list.
+- added setupFunction, setupData, labelFunction to SpriteSheetBuilder.addMovieClip
+- added SpriteStage & SpriteContainer for WebGL rendering
+- changes to how BitmapText works to support WebGL
+- added WebGL examples
+- added .visible to Matrix2D for use by DOMElement
+- updates to how DisplayObject.snapToPixel & Stage.snapToPixelEnabled interact
+- major improvements to Stage.nextStage to better handle layered canvases
+- ButtonHelper now sets mouseChildren to false, and reverts to default cursor when disabled
+- fixed issue introduced in 0.7.1 where getObjectsUnderPoint ignore elements without mouse listeners
+- doc updates
+- fixed example formatting in docs
+- simplified handling of custom data passed into Stage.update()
+- display object tick events will now include delta, time, paused, and runTime properties if a Ticker tick event object is passed as the first param to Stage.update()
+- added Stage.tick()
+- added Event.set()
+- added MovieClip.framerate and support for time based movieclips
+- Added Bower support, including grunt task for automatically updating bower.json
+- fixed an issue with Ticker.reset()
+- Ticker.getTime()/getEventTime() now return -1 if the Ticker has not been initialized
+- preventDefault support added to the tickstart and drawstart events
+- added Stage.drawRect to support selective rendering
+- major rewrite of Graphics to use specific command objects
+- added Graphics.getInstructions()
+- added Text.getMetrics()
+- fix for Text.getMeasuredWidth() when no font or an invalid font is specified
+- fix for spritesheets that included 0 width/height frames
+- the CreateJS CDN now supports https / SSL
+- improved how Sprite handles sequencing between animations with different speed values
+- added "change" event to Sprite
+- added "added" and "removed" events to DisplayObject
+- added the extras folder, with: SVGExport, Context2DLog, and PerformanceTests
+- added Graphics.store() / unstore()
+- examples now all use the combined lib
+- SpriteSheet.getNumFrames() now returns 0 instead of null if images are not loaded.
+- added some initial unit tests for the library
+- added helper methods to Rectangle: union, intersects, extend, intersection, pad, isEmpty, & contains.
+- updated clone() method for all classes
+- added Matrix2D.equals() method
+- added DisplayObject.transformMatrix
+- mouse interactions and getObjectsUnderPoint now respect masks
+- added a mode param to getObjectsUnderPoint() to respect mouseEnabled/mouseChildren and event listeners
+- added Stage.preventSelection to block accidental selection of document elements
+- added `pt` param to DisplayObject.localToGlobal, globalToLocal, and localToLocal methods
+- BlurFilter provides higher quality results (thanks quasimondo)
+- added MouseEvent.isTouch
+- added support for margin and spacing in sprite sheet data (thanks renatopp)
+
+
+Version 0.7.1 [December 12, 2013]
+****************************************************************************************************
+- fixed issue with mouseChildren not working with nested Containers
+- fixed issue where first call to Ticker.addEventListener() did not return the listener
+- added DisplayObject.tickEnabled & Container.tickChildren
+- fixed an issue related to modal dialogs and pointer position for mouse down
+- fixed an issue when calling gotoAndStop(animation) in the animationend event stack for the same animation
+- ColorMatrix no longer extends Array
+- fixed ColorMatrix.toArray(), .concat(), and .clone()
+- changed dblclick to use a canvas listener instead of global listener
+- added MouseEvent.localX/Y
+- fixed touch/multitouch in IE11
+- fixed issue with -1 mouse pointers (thanks cubica)
+- fixed issue with AlphaMapFilter (thanks Dave)
+- added willTrigger() to EventDispatcher
+- modified mouse event flow so items with no listeners are not checked for a hitTest.
+	- avoids unnecessary cross-domain issues introduced in EaselJS 0.7.0, when loaded images don't have any mouse listeners on them.
+- getObjectsUnderPoint() and getObjectUnderPoint() now account for hitAreas
+
+
+Version 0.7.0 [September 25, 2013]
+****************************************************************************************************
+CRITICAL (may break existing content):
+- removed all onEvent handlers (ex. onClick, onTick, onAnimationEnd, etc)
+- removed Ticker.addListener and .removeListener
+- most mouse events now bubble
+- BitmapAnimation renamed to Sprite
+- MouseEvent now inherits from new Event class
+- sprite sheet data's animation .frequency property removed in favour of .speed
+- removed "target" from MouseEvent's param list
+- returning false from an event handler no longer causes dispatchEvent to return false, see Event.preventDefault
+- Added "use strict"; to everything.
+- renamed BoxBlurFilter to BlurFilter
+
+*****
+DEPRECATED (will be removed in a future version):
+- MouseEvent mousemove/mouseup events, see DisplayObject pressmove/pressup
+- SpriteSheetUtils.flip()
+- SpriteSheetUtils.mergeAlpha()
+
+*****
+OTHER:
+- implemented createjs Utils
+- implemented "use strict" mode
+- BitmapAnimation renamed to Sprite
+- renamed the "frequency" property in sprite sheet data to "speed" and changed functionality:
+	* support for non-integer values
+	* inverted outcome vs frequency. Ex. a "speed" value of 2 doubles playback speed, 0.5 halves it
+- added Sprite.framerate and SpriteSheet.framerate
+- added frameOrAnimation param to Sprite constructor
+- deprecated Sprite.offset (no longer functional)
+- added Ticker.timingMode and deprecated Ticker.useRAF
+	* added Ticker.TIMEOUT, Ticker.RAF, Ticker.RAF_SYNCHED timing mode constants
+- added Ticker.getMeasuredTickTime()
+- Ticker now does not automatically init until a listener is added to it
+- added Ticker.reset()
+- added Stage.nextStage to relay interaction events
+- added Graphics.inject()
+- added Text.getMeasuredHeight()
+- fixes and improvements to Touch support
+- fixed setChildIndex when adding to an index lower than the item exists at already.
+- added Graphics.Command
+- merged lots of doc updates (thanks @peteshand)
+- lots of doc, example, & tutorial updates
+- included MouseEvent.nativeEvent for mouseover/out events
+- added rollover / rollout events to DisplayObject
+- prevented mouseover/out and rollover/out events from triggering if the mouse is not over the canvas
+	* ex. within a scrolling div or DOM element layered over top
+- added pressmove / pressup events to DisplayObject
+- added Matrix2D.transformPoint() method
+- fixed an issue when adding the same listener to an event twice
+- added Event class, used by all events
+- MouseEvent inherits from new Event class
+- added .on and .off methods to EventDispatcher
+- fixed an issue with extending EventDispatcher
+- DisplayObject, SpriteSheet, and SpriteSheetBuilder now inherit from EventDispatcher
+- fixed an issue with the tick event's time value being epoch time instead of Timer time
+- added Ticker.getEventTime()
+- added Ticker.maxDelta
+- the initialize methods for Point, Rectangle, and Matrix2D are now public
+- added .copy() to Point, Rectangle, and Matrix2D
+- fixed an issue that could occur when reinitializing Matrix2D
+- added MovieClip.frameBounds
+- fixed errors when the lib was loaded in a browser with no canvas support (ex. IE8)
+- added support for .next on single frame spritesheet animations
+- added the BitmapText class
+- improved DOMElement redraw handling to avoid flicker and layout costs
+- added Stage mouseleave and mouseenter events
+- added tickstart, tickend, drawstart, and drawend events to Stage
+- added getBounds() functionality for all display objects
+- added MovieClip.getLabels() & getCurrentLabel()
+- Filter.getBounds() now returns null as its default value
+- bounds for cache() are now automatically adjusted for filters
+- improved BlurFilter performance and results (thanks to Mario Klingemann)
+- objects added to a MovieClip via addChild will now display over objects managed by the MovieClip
+- Fixed clone on AlphaMapFilter
+- Updated the build process to use NodeJS & Grunt.js. Please refer to the README in the build folder.
+
+
+Version 0.6.1 [May 14, 2013]
 ****************************************************************************************************
 - Updated demos:
 	* propagate the tick event to the stage. This is a best practice.
@@ -72,7 +313,7 @@ Version 0.6.0 [Feb 12, 2013]
 
 Version 0.5.0 [Aug 24, 2012]
 ****************************************************************************************************
-- moved all c lasses into a configurable createjs namespace
+- moved all classes into a configurable createjs namespace
 - added support for multitouch
 - complete rewrite of drawing model to use a hybrid approach (save/restore & matrix)
 - added DisplayObject.mask
@@ -106,7 +347,7 @@ Version 0.5.0 [Aug 24, 2012]
 - added Touch.disable(stage)
 
 
-Version 0.4.2 [Apr 18, 2012] 
+Version 0.4.2 [Apr 18, 2012]
 ****************************************************************************************************
 - hot fix for issues with Ticker that caused reduced frame rates.
 - NO API CHANGES
@@ -136,7 +377,7 @@ Version 0.4.1 [Apr 14, 2012]
 - updateCache now clears the cacheCanvas correctly
 
 
-Version 0.4 [Nov 30, 2011] 
+Version 0.4 [Nov 30, 2011]
 ****************************************************************************************************
 - completely rewrote BitmapSequence (now BitmapAnimation) & SpriteSheet including data format
 	- BitmapSequence was renamed BitmapAnimation

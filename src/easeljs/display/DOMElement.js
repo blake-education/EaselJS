@@ -3,7 +3,7 @@
 * Visit http://createjs.com/ for documentation, updates and examples.
 *
 * Copyright (c) 2010 gskinner.com, inc.
-* 
+*
 * Permission is hereby granted, free of charge, to any person
 * obtaining a copy of this software and associated documentation
 * files (the "Software"), to deal in the Software without
@@ -12,10 +12,10 @@
 * copies of the Software, and to permit persons to whom the
 * Software is furnished to do so, subject to the following
 * conditions:
-* 
+*
 * The above copyright notice and this permission notice shall be
 * included in all copies or substantial portions of the Software.
-* 
+*
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -26,88 +26,102 @@
 * OTHER DEALINGS IN THE SOFTWARE.
 */
 
+/**
+ * @module EaselJS
+ */
+
 // namespace:
 this.createjs = this.createjs||{};
 
 (function() {
-// TODO: fix problems with rotation.
-// TODO: exclude from getObjectsUnderPoint
+	"use strict";
 
-/**
- * <b>This class is still experimental, and more advanced use is likely to be buggy. Please report bugs.</b>
- *
- * A DOMElement allows you to associate a HTMLElement with the display list. It will be transformed
- * within the DOM as though it is child of the {{#crossLink "Container"}}{{/crossLink}} it is added to. However, it is
- * not rendered to canvas, and as such will retain whatever z-index it has relative to the canvas (ie. it will be
- * drawn in front of or behind the canvas).
- *
- * The position of a DOMElement is relative to their parent node in the DOM. It is recommended that
- * the DOM Object be added to a div that also contains the canvas so that they share the same position
- * on the page.
- *
- * DOMElement is useful for positioning HTML elements over top of canvas content, and for elements
- * that you want to display outside the bounds of the canvas. For example, a tooltip with rich HTML
- * content.
- *
- * <h4>Mouse Interaction</h4>
- *
- * DOMElement instances are not full EaselJS display objects, and do not participate in EaselJS mouse
- * events or support methods like hitTest. To get mouse events from a DOMElement, you must instead add handlers to
- * the htmlElement (note, this does not support EventDispatcher)
- *
- *      var domElement = new createjs.DOMElement(htmlElement);
- *      domElement.htmlElement.onclick = function() {
- *          console.log("clicked");
- *      }
- *
- * @class DOMElement
- * @extends DisplayObject
- * @constructor
- * @param {HTMLElement} htmlElement A reference or id for the DOM element to manage.
- */
-var DOMElement = function(htmlElement) {
-  this.initialize(htmlElement);
-};
-var p = DOMElement.prototype = new createjs.DisplayObject();
+	// @todo - Move into separate file.
+	function BrowserDetect() {
+		throw "BrowserDetect cannot be instantiated.";
+	}
 
-// public properties:
-	/**
-	 * The DOM object to manage.
-	 * @property htmlElement
-	 * @type HTMLElement
-	 */
-	p.htmlElement = null;
+	// Returns 2 on a retina macbook pro for example.
+	BrowserDetect.getDevicePixelRatio = function() {
+		var ratio = 1;
+    // To account for zoom, change to use deviceXDPI instead of systemXDPI
+    if (window.screen.systemXDPI != null && window.screen.logicalXDPI != null && window.screen.systemXDPI > window.screen.logicalXDPI) {
+      // Only allow for values > 1
+    	ratio = window.screen.systemXDPI / window.screen.logicalXDPI;
+    } else if (window.devicePixelRatio != null) {
+      ratio = window.devicePixelRatio;
+    }
+    return ratio;
+	}
 
-// private properties:
-	/**
-	 * @property _oldMtx
-	 * @protected
-	 */
-	p._oldMtx = null;
 
 // constructor:
 	/**
-	 * @property DisplayObject_initialize
-	 * @type Function
-   * @private
+	 * <b>This class is still experimental, and more advanced use is likely to be buggy. Please report bugs.</b>
+	 *
+	 * A DOMElement allows you to associate a HTMLElement with the display list. It will be transformed
+	 * within the DOM as though it is child of the {{#crossLink "Container"}}{{/crossLink}} it is added to. However, it is
+	 * not rendered to canvas, and as such will retain whatever z-index it has relative to the canvas (ie. it will be
+	 * drawn in front of or behind the canvas).
+	 *
+	 * The position of a DOMElement is relative to their parent node in the DOM. It is recommended that
+	 * the DOM Object be added to a div that also contains the canvas so that they share the same position
+	 * on the page.
+	 *
+	 * DOMElement is useful for positioning HTML elements over top of canvas content, and for elements
+	 * that you want to display outside the bounds of the canvas. For example, a tooltip with rich HTML
+	 * content.
+	 *
+	 * <h4>Mouse Interaction</h4>
+	 *
+	 * DOMElement instances are not full EaselJS display objects, and do not participate in EaselJS mouse
+	 * events or support methods like hitTest. To get mouse events from a DOMElement, you must instead add handlers to
+	 * the htmlElement (note, this does not support EventDispatcher)
+	 *
+	 *      var domElement = new createjs.DOMElement(htmlElement);
+	 *      domElement.htmlElement.onclick = function() {
+	 *          console.log("clicked");
+	 *      }
+	 *
+	 * @class DOMElement
+	 * @extends DisplayObject
+	 * @constructor
+	 * @param {HTMLElement} htmlElement A reference or id for the DOM element to manage.
 	 */
-	p.DisplayObject_initialize = p.initialize;
-
-	/**
-	 * Initialization method.
-	 * @method initialize
-	 * @protected
-	*/
-	p.initialize = function(htmlElement) {
+	function DOMElement(htmlElement) {
+		this.DisplayObject_constructor();
+		
 		if (typeof(htmlElement)=="string") { htmlElement = document.getElementById(htmlElement); }
-		this.DisplayObject_initialize();
 		this.mouseEnabled = false;
-		this.htmlElement = htmlElement;
+		
 		var style = htmlElement.style;
-		// this relies on the _tick method because draw isn't called if a parent is not visible.
 		style.position = "absolute";
 		style.transformOrigin = style.WebkitTransformOrigin = style.msTransformOrigin = style.MozTransformOrigin = style.OTransformOrigin = "0% 0%";
+		
+		
+	// public properties:
+		/**
+		 * The DOM object to manage.
+		 * @property htmlElement
+		 * @type HTMLElement
+		 */
+		this.htmlElement = htmlElement;
+	
+	
+	// private properties:
+		/**
+		 * @property _oldMtx
+		 * @type Matrix2D
+		 * @protected
+		 */
+		this._oldProps = null;
+		this._devicePixelRatio = BrowserDetect.getDevicePixelRatio();
 	}
+	var p = createjs.extend(DOMElement, createjs.DisplayObject);
+
+	// TODO: deprecated
+	// p.initialize = function() {}; // searchable for devs wondering where it is. REMOVED. See docs for details.
+
 
 // public methods:
 	/**
@@ -119,10 +133,10 @@ var p = DOMElement.prototype = new createjs.DisplayObject();
 	 */
 	p.isVisible = function() {
 		return this.htmlElement != null;
-	}
+	};
 
 	/**
-	 * Draws the display object into the specified context ignoring it's visible, alpha, shadow, and transform.
+	 * Draws the display object into the specified context ignoring its visible, alpha, shadow, and transform.
 	 * Returns true if the draw was handled (useful for overriding functionality).
 	 * NOTE: This method is mainly for internal use, though it may be useful for advanced uses.
 	 * @method draw
@@ -130,26 +144,11 @@ var p = DOMElement.prototype = new createjs.DisplayObject();
 	 * @param {Boolean} ignoreCache Indicates whether the draw operation should ignore any current cache.
 	 * For example, used for drawing the cache (to prevent it from simply drawing an existing cache back
 	 * into itself).
+	 * @return {Boolean}
 	 */
 	p.draw = function(ctx, ignoreCache) {
-		if (this.htmlElement == null) { return; }
-		var mtx = this.getConcatenatedMatrix(this._matrix);
-		
-		var o = this.htmlElement;
-		var style = o.style;
-		
-		// this relies on the _tick method because draw isn't called if a parent is not visible.
-		if (this.visible) { style.visibility = "visible"; }
-		else { return true; }
-		
-		var oMtx = this._oldMtx||{};
-		if (oMtx.alpha != mtx.alpha) { style.opacity = ""+mtx.alpha; oMtx.alpha = mtx.alpha; }
-		if (oMtx.tx != mtx.tx || oMtx.ty != mtx.ty || oMtx.a != mtx.a || oMtx.b != mtx.b || oMtx.c != mtx.c || oMtx.d != mtx.d) {
-			style.transform = style.WebkitTransform = style.OTransform =  style.msTransform = ["matrix("+mtx.a,mtx.b,mtx.c,mtx.d,(mtx.tx+0.5|0),(mtx.ty+0.5|0)+")"].join(",");
-			style.MozTransform = ["matrix("+mtx.a,mtx.b,mtx.c,mtx.d,(mtx.tx+0.5|0)+"px",(mtx.ty+0.5|0)+"px)"].join(",");
-			this._oldMtx = mtx.clone();
-		}
-		
+		// this relies on the _tick method because draw isn't called if the parent is not visible.
+		// the actual update happens in _handleDrawEnd
 		return true;
 	};
 
@@ -173,7 +172,7 @@ var p = DOMElement.prototype = new createjs.DisplayObject();
 
 	/**
 	 * Not applicable to DOMElement.
-	 * @method hitArea
+	 * @method hitTest
 	 */
 	p.hitTest = function() {};
 
@@ -211,54 +210,83 @@ var p = DOMElement.prototype = new createjs.DisplayObject();
 	p.toString = function() {
 		return "[DOMElement (name="+  this.name +")]";
 	};
-    
+
 	/**
      * Interaction events should be added to `htmlElement`, and not the DOMElement instance, since DOMElement instances
 	 * are not full EaselJS display objects and do not participate in EaselJS mouse events.
 	 * @event click
 	 */
-          
+
      /**
      * Interaction events should be added to `htmlElement`, and not the DOMElement instance, since DOMElement instances
  	 * are not full EaselJS display objects and do not participate in EaselJS mouse events.
 	 * @event dblClick
 	 */
-     
+
      /**
       * Interaction events should be added to `htmlElement`, and not the DOMElement instance, since DOMElement instances
  	  * are not full EaselJS display objects and do not participate in EaselJS mouse events.
 	  * @event mousedown
 	  */
-     
+
      /**
       * The HTMLElement can listen for the mouseover event, not the DOMElement instance.
       * Since DOMElement instances are not full EaselJS display objects and do not participate in EaselJS mouse events.
       * @event mouseover
-	  */ 
-     
+	  */
+
      /**
       * Not applicable to DOMElement.
 	  * @event tick
 	  */
-     
+
 
 // private methods:
 	/**
-	 * @property DisplayObject__tick
-	 * @type Function
+	 * @method _tick
+	 * @param {Object} evtObj An event object that will be dispatched to all tick listeners. This object is reused between dispatchers to reduce construction & GC costs.
+	 * function.
 	 * @protected
 	 */
-	p.DisplayObject__tick = p._tick;
+	p._tick = function(evtObj) {
+		var stage = this.getStage();
+		stage&&stage.on("drawend", this._handleDrawEnd, this, true);
+		this.DisplayObject__tick(evtObj);
+	};
 	
 	/**
-	 * @method _tick
+	 * @method _handleDrawEnd
+	 * @param {Event} evt
 	 * @protected
 	 */
-	p._tick = function(params) {
-		// TODO: figure out how to get around this.
-		this.htmlElement.style.visibility = "hidden";
-		this.DisplayObject__tick(params);
+	p._handleDrawEnd = function(evt) {
+		var o = this.htmlElement;
+		if (!o) { return; }
+		var style = o.style;
+		
+		var props = this.getConcatenatedDisplayProps(this._props), mtx = props.matrix;
+		
+		var visibility = props.visible ? "visible" : "hidden";
+		if (visibility != style.visibility) { style.visibility = visibility; }
+		if (!props.visible) { return; }
+		
+		var oldProps = this._oldProps, oldMtx = oldProps&&oldProps.matrix;
+		var n = 10000; // precision
+		
+		if (!oldMtx || !oldMtx.equals(mtx)) {
+			var str = "matrix(" + (mtx.a*n|0)/n/this._devicePixelRatio +","+ (mtx.b*n|0)/n +","+ (mtx.c*n|0)/n +","+ (mtx.d*n|0)/n/this._devicePixelRatio +","+ (mtx.tx+0.5|0)/this._devicePixelRatio;
+			style.transform = style.WebkitTransform = style.OTransform = style.msTransform = str +","+ (mtx.ty+0.5|0)/this._devicePixelRatio +")";
+			style.MozTransform = str +"px,"+ (mtx.ty+0.5|0)/this._devicePixelRatio +"px)";
+			if (!oldProps) { oldProps = this._oldProps = new createjs.DisplayProps(true, NaN); }
+			oldProps.matrix.copy(mtx);
+		}
+		
+		if (oldProps.alpha != props.alpha) {
+			style.opacity = ""+(props.alpha*n|0)/n;
+			oldProps.alpha = props.alpha;
+		}
 	};
 
-createjs.DOMElement = DOMElement;
+
+	createjs.DOMElement = createjs.promote(DOMElement, "DisplayObject");
 }());
